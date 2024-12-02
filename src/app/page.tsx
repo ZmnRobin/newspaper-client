@@ -45,6 +45,8 @@ export default function Home() {
         setArticles(data?.articles);
         setPage((prev) => prev + 1);
         setLoading(false);
+
+        console.log(data);
       } catch (err) {
         setError("Failed to fetch articles");
       } finally {
