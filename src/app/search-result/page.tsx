@@ -8,6 +8,9 @@ import SearchCard from "@/components/search/SearchCard";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import CustomLoader from "@/components/loader/CustomLoader";
 
+// Disable static rendering for this page
+export const dynamic = "force-dynamic";
+
 export default function SearchResult() {
   const [results, setResults] = useState<Articles[]>([]);
   const [page, setPage] = useState(1); 
@@ -18,14 +21,14 @@ export default function SearchResult() {
 
   // Fetch more search articles when scrolling reaches the end
   const fetchMoreArticles = async () => {
-    if (!hasMore) return; // Stop if no more data
+    if (!hasMore) return;
     try {
-      const data = await searchArticles(query, page); // Fetch next page of articles
+      const data = await searchArticles(query, page);
       if (data?.articles?.length > 0) {
         setResults((prev) => [...prev, ...data.articles]);
         setPage((prev) => prev + 1);
       } else {
-        setHasMore(false); // No more articles to fetch
+        setHasMore(false);
       }
     } catch (err) {
       console.error("Failed to fetch more articles");
@@ -34,16 +37,15 @@ export default function SearchResult() {
     }
   };
 
-  // Use custom infinite scroll hook to trigger fetching more articles
   const [isFetching] = useInfiniteScroll(fetchMoreArticles);
 
   useEffect(() => {
     const fetchArticles = async () => {
       setLoading(true);
-      setPage(1); // Reset page to 1 for a new search
-      setHasMore(true); // Reset hasMore to true for a new search
+      setPage(1);
+      setHasMore(true);
       try {
-        const data = await searchArticles(query, 1); // Always start with page 1
+        const data = await searchArticles(query, 1);
         setResults(data?.articles || []);
         setLoading(false);
       } catch (err) {
@@ -53,7 +55,7 @@ export default function SearchResult() {
       }
     };
     fetchArticles();
-  }, [query]); // Run effect whenever `query` changes
+  }, [query]);
 
   if (loading) {
     return (
